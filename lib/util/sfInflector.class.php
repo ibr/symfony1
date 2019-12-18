@@ -97,6 +97,40 @@ class sfInflector
   {
     return sfInflector::camelize($table_name);
   }
+  private static function my_ucwords($str) {
+    $exceptions = array();
+    $exceptions['Mit'] = 'mit';
+    $exceptions['Und'] = 'und';
+    $exceptions['An '] = 'an ';
+    $exceptions['In '] = 'in ';
+    $exceptions['Durch '] = 'durch ';
+    $exceptions['Der'] = 'der';
+    $exceptions['Die '] = 'die ';
+    $exceptions['Das '] = 'das ';
+    $exceptions['Von '] = 'von ';
+    $exceptions['Zu '] = 'zu ';
+    //    etc.
+   
+    $separator = array(" ","-","+");
+   
+    $str = strtolower(trim($str));
+    foreach($separator as $s){
+        $word = explode($s, $str);
+
+        $return = "";
+        foreach ($word as $val){
+            $return .= $s . strtoupper($val{0}) . substr($val,1,strlen($val)-1);
+        }
+        $str = substr($return, 1);
+    }
+
+    foreach($exceptions as $find=>$replace){
+        if (strpos($return, $find) !== false){
+            $return = str_replace($find, $replace, $return);
+        }
+    }
+    return substr($return, 1);
+}
 
   /**
    * Returns a human-readable string from a lower case and underscored word by replacing underscores
@@ -121,10 +155,10 @@ class sfInflector
       $lower_case_and_underscored_word = substr($lower_case_and_underscored_word, 3);
     }
     if ($html_entities) {
-        $lower_case_and_underscored_word = preg_replace(array('/ae/','/oe/','/([^a])ue/'),array('&auml;','&ouml;','${1}&uuml;'), $lower_case_and_underscored_word);
+        $lower_case_and_underscored_word = preg_replace(array('/ae/','/oe/','/([^ae])ue/'),array('&auml;','&ouml;','${1}&uuml;'), $lower_case_and_underscored_word);
     } else {
-        $lower_case_and_underscored_word = preg_replace(array('/ae/','/oe/','/([^a])ue/'),array('ä','ö','${1}ü'), $lower_case_and_underscored_word);
+        $lower_case_and_underscored_word = preg_replace(array('/ae/','/oe/','/([^ae])ue/'),array('ä','ö','${1}ü'), $lower_case_and_underscored_word);
     }
-    return ucwords(str_replace('_', ' ', $lower_case_and_underscored_word));
+    return self::my_ucwords(str_replace('_', ' ', $lower_case_and_underscored_word));
   }
 }
