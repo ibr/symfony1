@@ -11,9 +11,8 @@
 /**
  * sfWidgetFormInput represents an HTML text input tag.
  *
- * @package    symfony
- * @subpackage widget
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ *
  * @version    SVN: $Id$
  */
 class sfWidgetFormInputText extends sfWidgetFormInput
@@ -32,6 +31,6 @@ class sfWidgetFormInputText extends sfWidgetFormInput
     if (array_key_exists('size', $options)) $this->attributes['size'] = $options['size'];
     parent::configure($options, $attributes);
 
-    $this->setOption('type', 'text');
-  }
+        $this->setOption('type', 'text');
+    }
 }
