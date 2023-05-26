@@ -72,14 +72,6 @@ abstract class sfModelGeneratorConfiguration
 
     abstract public function getFilterFormClass();
 
-  /**
-   * Constructor.
-   */
-  public function __construct()
-  {
-    $this->compile();
-  }
-
   protected function compile()
   {
     $config = $this->getConfig();
@@ -263,30 +255,6 @@ abstract class sfModelGeneratorConfiguration
     $this->configuration['credentials']['update'] = $this->configuration['credentials']['edit'];
   }
 
-  protected function parseVariables($context, $key)
-  {
-    preg_match_all('/%%([^%]+)%%/', $this->configuration[$context][$key], $matches, PREG_PATTERN_ORDER);
-    foreach ($matches[1] as $name)
-    {
-      list($name, $flag) = sfModelGeneratorConfigurationField::splitFieldWithFlag($name);
-      if (!isset($this->configuration[$context]['fields'][$name]))
-      {
-        $this->configuration[$context]['fields'][$name] = new sfModelGeneratorConfigurationField($name, array_merge(
-          array('type' => 'Text', 'label' => sfInflector::humanize(sfInflector::underscore($name))),
-          isset($config['default'][$name]) ? $config['default'][$name] : array(),
-          isset($config[$context][$name]) ? $config[$context][$name] : array(),
-          array('flag' => $flag)
-        ));
-      }
-      else
-      {
-        $this->configuration[$context]['fields'][$name]->setFlag($flag);
-      }
-
-      $this->configuration[$context][$key] = str_replace('%%'.$flag.$name.'%%', '%%'.$name.'%%', $this->configuration[$context][$key]);
-    }
-  }
-
   /**
    * @param string        $context
    * @param string[]|null $fields
@@ -294,8 +262,6 @@ abstract class sfModelGeneratorConfiguration
    */
   public function getContextConfiguration($context, $fields = null)
   {
-    if (!isset($this->configuration[$context]))
-    {
         if (!isset($this->configuration[$context])) {
             throw new InvalidArgumentException(sprintf('The context "%s" does not exist.', $context));
         }
@@ -310,7 +276,7 @@ abstract class sfModelGeneratorConfiguration
         }
 
         return $f;
-    }
+  }
 
     public function getFieldConfiguration($context, $field)
     {
@@ -546,7 +512,7 @@ abstract class sfModelGeneratorConfiguration
         return array();
     }
 
-    protected function compile()
+    protected function compile_todo_mergen()
     {
         $config = $this->getConfig();
 

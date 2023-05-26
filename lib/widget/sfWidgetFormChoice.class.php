@@ -98,6 +98,7 @@ class sfWidgetFormChoice extends sfWidgetFormChoiceBase
 
         return $this->getRenderer()->render($name, $value, $attributes, $errors);
     }
+  }
 
     /**
      * Gets the stylesheet paths associated with the widget.
@@ -145,35 +146,4 @@ class sfWidgetFormChoice extends sfWidgetFormChoiceBase
         return $renderer;
     }
 
-    /**
-     * Constructor.
-     *
-     * Available options:
-     *
-     *  * choices:          An array of possible choices (required)
-     *  * multiple:         true if the select tag must allow multiple selections
-     *  * expanded:         true to display an expanded widget
-     *                        if expanded is false, then the widget will be a select
-     *                        if expanded is true and multiple is false, then the widget will be a list of radio
-     *                        if expanded is true and multiple is true, then the widget will be a list of checkbox
-     *  * renderer_class:   The class to use instead of the default ones
-     *  * renderer_options: The options to pass to the renderer constructor
-     *  * renderer:         A renderer widget (overrides the expanded and renderer_options options)
-     *                      The choices option must be: new sfCallable($thisWidgetInstance, 'getChoices')
-     *
-     * @param array $options    An array of options
-     * @param array $attributes An array of default HTML attributes
-     *
-     * @see sfWidgetFormChoiceBase
-     */
-    protected function configure($options = array(), $attributes = array())
-    {
-        parent::configure($options, $attributes);
-
-        $this->addOption('multiple', false);
-        $this->addOption('expanded', false);
-        $this->addOption('renderer_class', false);
-        $this->addOption('renderer_options', array());
-        $this->addOption('renderer', false);
-    }
 }

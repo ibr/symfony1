@@ -29,8 +29,6 @@ abstract class sfModelGeneratorHelper
    */
   public function linkToDelete($object, $params)
   {
-    if ($object->isNew())
-    {
         if ($object->isNew()) {
             return '';
         }

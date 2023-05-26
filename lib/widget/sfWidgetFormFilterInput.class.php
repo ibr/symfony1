@@ -62,25 +62,4 @@ class sfWidgetFormFilterInput extends sfWidgetForm
         ));
     }
 
-    /**
-     * Constructor.
-     *
-     * Available options:
-     *
-     *  * with_empty:  Whether to add the empty checkbox (true by default)
-     *  * empty_label: The label to use when using an empty checkbox
-     *  * template:    The template to use to render the widget
-     *                 Available placeholders: %input%, %empty_checkbox%, %empty_label%
-     *
-     * @param array $options    An array of options
-     * @param array $attributes An array of default HTML attributes
-     *
-     * @see sfWidgetForm
-     */
-    protected function configure($options = array(), $attributes = array())
-    {
-        $this->addOption('with_empty', true);
-        $this->addOption('empty_label', 'is empty');
-        $this->addOption('template', '%input%<br />%empty_checkbox% %empty_label%');
-    }
 }

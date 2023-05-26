@@ -83,17 +83,6 @@ class sfInflector
         return sfInflector::underscore($class_name);
     }
 
-    /**
-     * Returns model class name for given database table.
-     *
-     * @param string $table_name table name
-     *
-     * @return string classified table name
-     */
-    public static function classify($table_name)
-    {
-        return sfInflector::camelize($table_name);
-    }
   /**
    * Returns model class name for given database table.
    *
@@ -127,7 +116,7 @@ class sfInflector
 
         $return = "";
         foreach ($word as $val){
-            $return .= $s . strtoupper($val{0}) . substr($val,1,strlen($val)-1);
+            $return .= $s . strtoupper($val[0]) . substr($val,1,strlen($val)-1);
         }
         $str = substr($return, 1);
     }
