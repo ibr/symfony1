@@ -95,9 +95,9 @@ class sfWidgetFormChoice extends sfWidgetFormChoiceBase
         if (!$this->getOption('renderer') && !$this->getOption('renderer_class') && $this->getOption('expanded')) {
             unset($attributes['multiple']);
         }
-
-        return $this->getRenderer()->render($name, $value, $attributes, $errors);
     }
+
+    return $this->getRenderer()->render($name, $value, $attributes, $errors);
   }
 
     /**
