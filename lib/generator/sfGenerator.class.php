@@ -60,26 +60,30 @@ abstract class sfGenerator
    * @param string $generatedModuleName The name of module name to generate
    * @param array  $files               A list of template files to generate
    */
-  protected function generatePhpFiles($generatedModuleName, $files = array())
-  {
-    foreach ($files as $file)
+    protected function generatePhpFiles($generatedModuleName, $files = array())
     {
-      if (strpos($file, '_layout')) {
-          //duplicate _list_t[hd]_layout for every layout
-          foreach ($this->configuration->getListLayouts() as $layout => $params) {
-              $filename = preg_replace('/_layout/', '_'.$layout, $file);
-              $this->configuration->currentLayout = $layout;
-              //Name des Layouts übergeben
-              //T::log("generatePhpFiles $layout: $file -> $filename");
-              $this->getGeneratorManager()->save($generatedModuleName.'/'.$filename, $this->evalTemplate($file));
-          }
-      } else {
-        $this->getGeneratorManager()->save($generatedModuleName.'/'.$file, $this->evalTemplate($file));
-      }
-    }
-  }
+        foreach ($files as $file) {
+            if (strpos($file, '_layout')) {
+                // Duplicate _list_t[hd]_layout for every layout
+                foreach ($this->configuration->getListLayouts() as $layout => $params) {
+                    $filename = preg_replace('/_layout/', '_'.$layout, $file);
+		    $this->configuration->currentLayout = $layout;
+		    //Name des Layouts Ã¼bergeben
+		    //T::log("generatePhpFiles $layout: $file -> $filename");
 
-  /**
+                    $this->getGeneratorManager()->save(
+                        $generatedModuleName.'/'.$filename,
+                        $this->evalTemplate($file, $layout) // Pass $layout as a parameter
+                    );
+                }
+            } else {
+                $this->getGeneratorManager()->save($generatedModuleName.'/'.$file, $this->evalTemplate($file));
+            }
+        }
+    }
+
+
+    /**
    * Evaluates a template file.
    *
    * @param string $templateFile The template file path
