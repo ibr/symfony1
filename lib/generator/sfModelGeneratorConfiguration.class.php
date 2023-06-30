@@ -302,14 +302,19 @@ abstract class sfModelGeneratorConfiguration
      */
     public function getValue($key, $default = null, $escaped = false)
     {
+        if ($key === null) {
+            throw new InvalidArgumentException('Configuration key must not be null.');
+        }
+
         if (preg_match('/^(?P<context>[^\.]+)\.fields\.(?P<field>[^\.]+)\.(?P<key>.+)$/', $key, $matches)) {
             $v = $this->getFieldConfiguration($matches['context'], $matches['field'])->getConfig($matches['key'], $default);
+
         } elseif (preg_match('/^(?P<context>[^\.]+)\.(?P<key>.+)$/', $key, $matches)) {
             $v = sfModelGeneratorConfiguration::getFieldConfigValue($this->getContextConfiguration($matches['context']), $matches['key'], $default);
         } else {
             throw new InvalidArgumentException(sprintf('Configuration key "%s" is invalid.', $key));
         }
-
+        // T::log(__METHOD__.' '.$key.' '.print_r($v, true));
         return $escaped ? str_replace("'", "\\'", $v) : $v;
     }
 
@@ -637,23 +642,28 @@ abstract class sfModelGeneratorConfiguration
 
     protected function parseVariables($context, $key)
     {
-        preg_match_all('/%%([^%]+)%%/', $this->configuration[$context][$key], $matches, PREG_PATTERN_ORDER);
+        preg_match_all('/%%([^%]+)%%/', $this->configuration[$context][$key] ?? '', $matches, PREG_PATTERN_ORDER);
+
         foreach ($matches[1] as $name) {
+            // T::log('parse '. $context .' '. $name);
             list($name, $flag) = sfModelGeneratorConfigurationField::splitFieldWithFlag($name);
+
             if (!isset($this->configuration[$context]['fields'][$name])) {
                 $this->configuration[$context]['fields'][$name] = new sfModelGeneratorConfigurationField($name, array_merge(
-                    array('type' => 'Text', 'label' => sfInflector::humanize(sfInflector::underscore($name))),
-                    isset($config['default'][$name]) ? $config['default'][$name] : array(),
-                    isset($config[$context][$name]) ? $config[$context][$name] : array(),
-                    array('flag' => $flag)
+                    ['type' => 'Text', 'label' => sfInflector::humanize(sfInflector::underscore($name))],
+                    $config['default'][$name] ?? [],
+                    $config[$context][$name] ?? [],
+                    ['flag' => $flag]
                 ));
             } else {
                 $this->configuration[$context]['fields'][$name]->setFlag($flag);
             }
 
-            $this->configuration[$context][$key] = str_replace('%%'.$flag.$name.'%%', '%%'.$name.'%%', $this->configuration[$context][$key]);
+            $this->configuration[$context][$key] = str_replace('%%' . $flag . $name . '%%', '%%' . $name . '%%', $this->configuration[$context][$key]);
         }
     }
+
+
 
     protected function mapFieldName(sfModelGeneratorConfigurationField $field)
     {

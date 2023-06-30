@@ -116,8 +116,9 @@ class sfInflector
 
         $return = "";
         foreach ($word as $val){
+		if (is_string($val) && strlen($val) > 0) {
             $return .= $s . strtoupper($val[0]) . substr($val,1,strlen($val)-1);
-        }
+        }}
         $str = substr($return, 1);
     }
 

@@ -138,7 +138,7 @@ class sfNumberFormat
         // replace currency sign
         $symbol = @$this->formatInfo->getCurrencySymbol($currency);
         if (null === $symbol) {
-            $symbol = $currency;
+            $symbol = $currency ?? '';
         }
 
         $result = str_replace('¤', $symbol, $result);

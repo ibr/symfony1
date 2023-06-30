@@ -88,9 +88,15 @@ function escape_javascript($javascript = '')
  *
  * @return string escaped string
  */
+
 function escape_once($html)
 {
-    return fix_double_escape(htmlspecialchars($html, ENT_COMPAT, sfConfig::get('sf_charset')));
+    if (is_string($html)) {
+        return fix_double_escape(htmlspecialchars($html, ENT_COMPAT, sfConfig::get('sf_charset', 'UTF-8')));
+    } else {
+        // Handle the case when $html is not a string
+        return '';
+    }
 }
 
 /**
