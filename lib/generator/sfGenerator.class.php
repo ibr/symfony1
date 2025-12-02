@@ -12,8 +12,6 @@
  * sfGenerator is the abstract base class for all generators.
  *
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- *
- * @version    SVN: $Id$
  */
 abstract class sfGenerator
 {
@@ -52,7 +50,7 @@ abstract class sfGenerator
      *
      * @return string The cache for the configuration file
      */
-    abstract public function generate($params = array());
+    abstract public function generate($params = []);
 
   /**
    * Generates PHP files for a given module name.

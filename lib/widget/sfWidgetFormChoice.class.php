@@ -12,56 +12,23 @@
  * sfWidgetFormChoice represents a choice widget.
  *
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- *
- * @version    SVN: $Id$
  */
 class sfWidgetFormChoice extends sfWidgetFormChoiceBase
 {
-  /**
-   * Constructor.
-   *
-   * Available options:
-   *
-   *  * choices:          An array of possible choices (required)
-   *  * multiple:         true if the select tag must allow multiple selections
-   *  * expanded:         true to display an expanded widget
-   *                        if expanded is false, then the widget will be a select
-   *                        if expanded is true and multiple is false, then the widget will be a list of radio
-   *                        if expanded is true and multiple is true, then the widget will be a list of checkbox
-   *  * renderer_class:   The class to use instead of the default ones
-   *  * renderer_options: The options to pass to the renderer constructor
-   *  * renderer:         A renderer widget (overrides the expanded and renderer_options options)
-   *                      The choices option must be: new sfCallable($thisWidgetInstance, 'getChoices')
-   * @param array $options     An array of options
-   * @param array $attributes  An array of default HTML attributes
-   *
-   * @see sfWidgetFormChoiceBase
-   */
-  protected function configure($options = array(), $attributes = array())
-  {
-    parent::configure($options, $attributes);
+    /**
+     * Sets the format for HTML id attributes. This is made avaiable to the renderer,
+     * as this widget does not render itself, but delegates to the renderer instead.
+     *
+     * @param string $format The format string (must contain a %s for the id placeholder)
+     *
+     * @see sfWidgetForm
+     */
+    public function setIdFormat($format)
+    {
+        $this->options['renderer_options']['id_format'] = $format;
 
-    $this->addOption('multiple', false);
-    $this->addOption('hide_if_empty', false);
-    $this->addOption('expanded', false);
-    $this->addOption('renderer_class', false);
-    $this->addOption('renderer_options', array());
-    $this->addOption('renderer', false);
-    $this->addOption('size', false);
-  }
-
-  /**
-   * Sets the format for HTML id attributes. This is made avaiable to the renderer,
-   * as this widget does not render itself, but delegates to the renderer instead.
-   *
-   * @param string $format  The format string (must contain a %s for the id placeholder)
-   *
-   * @see sfWidgetForm
-   */
-  public function setIdFormat($format)
-  {
-    $this->options['renderer_options']['id_format'] = $format;
-  }
+        return $this;
+    }
 
   /**
    * Renders the widget.
@@ -75,7 +42,7 @@ class sfWidgetFormChoice extends sfWidgetFormChoiceBase
    *
    * @see sfWidgetForm
    */
-  public function render($name, $value = null, $attributes = array(), $errors = array())
+  public function render($name, $value = null, $attributes = [], $errors = [])
   {
     if ($this->getOption('hide_if_empty') && count($this->getChoices()) <= 1)  {
         //T::log(__METHOD__. " $name ausgeblendet $value");
@@ -132,7 +99,7 @@ class sfWidgetFormChoice extends sfWidgetFormChoiceBase
         }
 
         $options = $this->options['renderer_options'];
-        $options['choices'] = new sfCallable(array($this, 'getChoices'));
+        $options['choices'] = new sfCallable([$this, 'getChoices']);
 
         $renderer = new $class($options, $this->getAttributes());
 
@@ -146,4 +113,35 @@ class sfWidgetFormChoice extends sfWidgetFormChoiceBase
         return $renderer;
     }
 
+    /**
+     * Constructor.
+     *
+     * Available options:
+     *
+     *  * choices:          An array of possible choices (required)
+     *  * multiple:         true if the select tag must allow multiple selections
+     *  * expanded:         true to display an expanded widget
+     *                        if expanded is false, then the widget will be a select
+     *                        if expanded is true and multiple is false, then the widget will be a list of radio
+     *                        if expanded is true and multiple is true, then the widget will be a list of checkbox
+     *  * renderer_class:   The class to use instead of the default ones
+     *  * renderer_options: The options to pass to the renderer constructor
+     *  * renderer:         A renderer widget (overrides the expanded and renderer_options options)
+     *                      The choices option must be: new sfCallable($thisWidgetInstance, 'getChoices')
+     *
+     * @param array $options    An array of options
+     * @param array $attributes An array of default HTML attributes
+     *
+     * @see sfWidgetFormChoiceBase
+     */
+    protected function configure($options = [], $attributes = [])
+    {
+        parent::configure($options, $attributes);
+
+        $this->addOption('multiple', false);
+        $this->addOption('expanded', false);
+        $this->addOption('renderer_class', false);
+        $this->addOption('renderer_options', []);
+        $this->addOption('renderer', false);
+    }
 }
