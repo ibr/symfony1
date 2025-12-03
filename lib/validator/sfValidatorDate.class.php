@@ -80,7 +80,7 @@ class sfValidatorDate extends sfValidatorBase
     // convert timestamp to date number format
     if (is_numeric($value))
     {
-        if ($date = T::completeDate((string) $value)) {
+        if ($date = self::completeDate((string) $value)) {
             $clean = $date->format('YmdHis');
         } else {
             $cleanTime = (int) $value;
@@ -99,7 +99,7 @@ class sfValidatorDate extends sfValidatorBase
             }
             $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
             $clean = $date->format('YmdHis');
-        } elseif ($date = T::completeDate((string) $value)) {
+        } elseif ($date = self::completeDate((string) $value)) {
             $clean = $date->format('YmdHis');
         } else {
             throw new sfValidatorError($this, 'invalid', ['value' => $value]);
@@ -240,5 +240,44 @@ class sfValidatorDate extends sfValidatorBase
         }
 
         return parent::isEmpty($value);
+    }
+
+    /**
+     * Converts a date string to a DateTime object.
+     *
+     * Accepts formats like:
+     *  - 1.2.2021
+     *  - 01.02.2021
+     *  - 1.2.21
+     *  - 1.2. (current year assumed)
+     *
+     * @param string $string_stichtag The date string to parse
+     *
+     * @return DateTime|null A DateTime object or null if invalid
+     */
+    public static function completeDate($string_stichtag)
+    {
+        $date = null;
+        if (preg_match('/^(\d{1,2})\.?(\d{1,2})\.?(\d{1,4})?$/', $string_stichtag, $match)) {
+            $day = $match[1];
+            $month = $match[2];
+            if (!isset($match[3]) || is_null($match[3]) || !is_numeric($match[3])) {
+                // fehlendes Jahr -> aktuelles Jahr
+                $year = date('Y');
+            } elseif ($match[3] < 1000) {
+                // nicht vierstelliges Jahr -> vierstelliges Jahr
+                $year = 2000 + $match[3];
+            } elseif (strlen($match[3]) == 4) {
+                // vierstelliges Jahr übernehmen
+                $year = $match[3];
+            } else {
+                $year = null;
+            }
+            if ($year && checkdate($month, $day, $year)) {
+                $date = new DateTime($day.'.'.$month.'.'.$year);
+                $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
+            }
+        }
+        return $date;
     }
 }
