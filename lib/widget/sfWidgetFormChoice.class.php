@@ -143,5 +143,6 @@ class sfWidgetFormChoice extends sfWidgetFormChoiceBase
         $this->addOption('renderer_class', false);
         $this->addOption('renderer_options', []);
         $this->addOption('renderer', false);
+        $this->addOption('size', false);
     }
 }
